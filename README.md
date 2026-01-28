@@ -1,6 +1,7 @@
 # rafh.cloud
 
 **rafh.cloud** is a personal website created for testing, learning, and showcasing monitoring‑related tools, configurations, and concepts.  
+
 The site currently runs on a lightweight VPS hosted on **Vultr**, and is used as a sandbox environment for experimenting with monitoring platforms such as **ScienceLogic SL1**, **Nagios**, **Grafana**, and **OpenTelemetry**.
 
 ---
@@ -9,9 +10,8 @@ The site currently runs on a lightweight VPS hosted on **Vultr**, and is used as
 
 This website serves as a small, controlled environment to:
 
-- Test monitoring agents, scripts, and integrations  
-- Explore dashboards, visualizations, and alerting concepts  
-- Prototype monitoring workflows before deploying them in production  
+- Test monitoring agents and scripts  
+- Explore Custom Event and alerting concepts  
 - Document findings, tuning strategies, and configuration notes  
 - Experiment with OpenTelemetry pipelines and exporters  
 
@@ -42,4 +42,5 @@ This website serves as a small, controlled environment to:
 
 ---
 
-## 📁 Project Structure (Example)
+**Website:** https://rafh.cloud  
+**Author:** Rafael Flores
