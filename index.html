@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090d12">
+    <meta name="description" content="Rafael Flores's personal website. Explore rafh.cloud using CLI commands.">
+    <title>Rafael Flores — rafh.cloud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="terminal" aria-label="Interactive portfolio terminal">
+      <header class="masthead">
+        <pre class="wordmark" role="heading" aria-level="1" aria-label="Rafael Flores">██████╗  █████╗ ███████╗ █████╗ ███████╗██╗
+██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔════╝██║
+██████╔╝███████║█████╗  ███████║█████╗  ██║
+██╔══██╗██╔══██║██╔══╝  ██╔══██║██╔══╝  ██║
+██║  ██║██║  ██║██║     ██║  ██║███████╗███████╗
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝
+███████╗██╗      ██████╗ ██████╗ ███████╗███████╗
+██╔════╝██║     ██╔═══██╗██╔══██╗██╔════╝██╔════╝
+█████╗  ██║     ██║   ██║██████╔╝█████╗  ███████╗
+██╔══╝  ██║     ██║   ██║██╔══██╗██╔══╝  ╚════██║
+██║     ███████╗╚██████╔╝██║  ██║███████╗███████║
+╚═╝     ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝</pre>
+        <p class="eyebrow">PERSONAL WEBSITE <span>•</span> INTERACTIVE TERMINAL</p>
+        <div class="system-status"><span class="status-dot"></span> SYSTEM ONLINE <span class="status-divider">/</span> TYPE <kbd>help</kbd> TO EXPLORE</div>
+      </header>
+
+      <section class="console" aria-label="Terminal output">
+        <div class="console-bar" aria-hidden="true">
+          <span class="window-lights"><i></i><i></i><i></i></span>
+          <span class="console-title">guest@rafh.cloud <span>—</span> ~/home</span>
+          <span class="console-version">bash — 80×24</span>
+        </div>
+        <div class="output" id="output" aria-live="polite" aria-relevant="additions text"></div>
+        <form class="command-line" id="command-form" autocomplete="off">
+          <label class="prompt" for="command-input"><span class="prompt-user">guest@rafh.cloud</span><span class="prompt-path">:~</span><span class="prompt-symbol">$</span></label>
+          <input id="command-input" name="command" type="text" spellcheck="false" autocapitalize="off" aria-label="Enter a terminal command" autofocus>
+          <span class="cursor" aria-hidden="true"></span>
+        </form>
+      </section>
+
+      <footer class="footer">
+        <span>BUILT WITH CURIOSITY <span class="footer-heart">♥</span></span>
+        <span class="footer-hint">TIP: TRY <code>ls</code>, THEN <code>cat about.txt</code></span>
+      </footer>
+    </main>
+  </body>
+</html>
