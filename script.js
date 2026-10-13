@@ -63,6 +63,13 @@ function updatePrompt() {
   document.querySelector(".prompt-path").textContent = `:${currentDirectory}`;
 }
 
+function updateUtcClock() {
+  const now = new Date();
+  const clock = document.querySelector("#utc-clock");
+  clock.dateTime = now.toISOString();
+  clock.textContent = `${clock.dateTime.slice(0, 16).replace("T", " ")} UTC`;
+}
+
 function addLine(text = "", className = "") {
   const paragraph = document.createElement("p");
   paragraph.className = className;
@@ -74,12 +81,13 @@ function addLine(text = "", className = "") {
 function addWelcome() {
   if (welcomeShown) return;
   welcomeShown = true;
-  addLine("Welcome to rafh.cloud v1.0 - Linux Terminal", "welcome-title");
+  addLine("Welcome to rafh.cloud v1.0 - Simulated Terminal", "welcome-title");
   addLine("Explore my website using CLI commands.", "welcome-subtitle");
   addLine("");
-  addLine("Start here:  ls        list files", "muted");
-  addLine("            cat about.txt   learn about me", "muted");
-  addLine("            help      see all commands", "muted");
+  addLine("Start here:  ls -a     to list files", "muted");
+  addLine("            'cat about.txt' to learn about me", "muted");
+  addLine("            'help' to see available commands", "muted");
+  addLine("Press Tab to autocomplete commands, files, and directories.", "muted");
   addLine("");
 }
 
@@ -122,15 +130,15 @@ function showHelp() {
   addLine("COMMANDS", "section-title");
   addLine("  help               Show this list");
   addLine("  ls [-a]            List files (use -a to show hidden files)");
+  addLine("  ll                 Alias for ls -a");
   addLine("  cd [directory]     Explore projects/ or return with cd ~");
   addLine("  cat [file]         Read about.txt, skills.txt, projects.txt, contact.txt");
   addLine("  whoami             A quick introduction");
   addLine("  pwd                Print your current location");
-  addLine("  find [keyword]     Search portfolio files");
   addLine("  history            Show recent commands");
   addLine("  clear              Clear the terminal");
   addLine("");
-  addLine("Tip: use ↑ and ↓ to revisit commands. Try `cat about.txt` to get started.", "muted");
+  addLine("Tip: use Tab to autocomplete; ↑ and ↓ revisit commands.", "muted");
 }
 
 function showProjects() {
@@ -151,21 +159,71 @@ function showProject(name) {
   return true;
 }
 
-function runFind(query) {
-  if (!query) {
-    addLine("Usage: find [keyword]", "warning");
-    return;
+function completionCandidates(value) {
+  const argumentMatch = value.match(/^(\s*)(\S+)(\s+)(.*)$/s);
+  if (!argumentMatch) {
+    const prefix = value.trimStart().toLowerCase();
+    return ["help", "ls", "ll", "cd", "cat", "whoami", "pwd", "history", "clear", "run", "exit"]
+      .filter((command) => command.startsWith(prefix))
+      .map((command) => ({ value: command, isDirectory: false }));
   }
-  const matches = [];
-  if (JSON.stringify(profile).toLowerCase().includes(query)) matches.push("about.txt");
-  if (profile.skills.join(" ").toLowerCase().includes(query)) matches.push("skills.txt");
-  if (JSON.stringify(profile.projects).toLowerCase().includes(query)) matches.push("projects.txt");
-  if (`${profile.email} ${profile.github} ${profile.linkedin}`.toLowerCase().includes(query)) matches.push("contact.txt");
-  if (matches.length) {
-    addLine(matches.join("\n"));
+
+  const [, , action, , argument] = argumentMatch;
+  const prefix = argument.toLowerCase();
+  if (action.toLowerCase() === "cat") {
+    return Object.keys(files)
+      .filter((name) => name.toLowerCase().startsWith(prefix))
+      .map((name) => ({ value: name, isDirectory: false }));
+  }
+  if (action.toLowerCase() === "cd") {
+    const directories = currentDirectory === "~"
+      ? ["..", "~", "projects/"]
+      : currentDirectory === "~/projects"
+        ? [
+            "..",
+            ...profile.projects.map((project) => `${project.name.toLowerCase().replaceAll(" ", "-")}/`),
+          ]
+        : [".."];
+    return directories
+      .filter((directory) => directory.toLowerCase().startsWith(prefix))
+      .map((directory) => ({ value: directory, isDirectory: true }));
+  }
+  return [];
+}
+
+function completeInput() {
+  const value = input.value;
+  const tokenStart = value.lastIndexOf(" ") + 1;
+  const token = value.slice(tokenStart);
+  const candidates = completionCandidates(value);
+  const matches = candidates.filter((candidate) => candidate.value.toLowerCase().startsWith(token.toLowerCase()));
+  if (!matches.length) return;
+
+  let completion;
+  if (matches.length === 1) {
+    const match = matches[0];
+    completion = match.value;
+    if (!match.isDirectory || !match.value.endsWith("/")) completion += " ";
   } else {
-    addLine(`No matches found for "${query}".`, "muted");
+    completion = matches
+      .map((match) => match.value)
+      .reduce((common, candidate) => {
+        let length = 0;
+        while (
+          length < common.length
+          && length < candidate.length
+          && common[length].toLowerCase() === candidate[length].toLowerCase()
+        ) length += 1;
+        return common.slice(0, length);
+      });
+    if (completion.length <= token.length) {
+      addLine(matches.map((match) => match.value).join("    "), "muted");
+      return;
+    }
   }
+
+  input.value = value.slice(0, tokenStart) + completion;
+  input.setSelectionRange(input.value.length, input.value.length);
 }
 
 function runCommand(rawCommand) {
@@ -175,14 +233,18 @@ function runCommand(rawCommand) {
   historyIndex = history.length;
   addLine(`guest@rafh.cloud:${currentDirectory}$ ${command}`, "command-echo");
 
-  const [action, ...args] = command.split(/\s+/);
+  let [action, ...args] = command.split(/\s+/);
+  if (action.toLowerCase() === "ll") {
+    action = "ls";
+    args = ["-a", ...args];
+  }
   const argument = args.join(" ");
   switch (action.toLowerCase()) {
     case "help":
       showHelp();
       break;
     case "ls":
-      listFiles(args.includes("-a"));
+      listFiles(args.some((option) => /^-[^-]*a/.test(option)));
       break;
     case "pwd":
       addLine(`/home/${profile.name.toLowerCase().replaceAll(" ", "-")}${currentDirectory === "~" ? "" : `/${currentDirectory.slice(2)}`}`);
@@ -213,9 +275,6 @@ function runCommand(rawCommand) {
         }
       }
       break;
-    case "find":
-      runFind(argument.toLowerCase());
-      break;
     case "history":
       history.forEach((entry, index) => addLine(`  ${index + 1}  ${entry}`));
       break;
@@ -240,7 +299,19 @@ form.addEventListener("submit", (event) => {
   input.value = "";
 });
 
+document.querySelector(".quick-nav").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-command]");
+  if (!button) return;
+  input.value = button.dataset.command;
+  form.requestSubmit();
+  input.focus();
+});
+
 input.addEventListener("keydown", (event) => {
+  if (event.key === "Tab") {
+    event.preventDefault();
+    completeInput();
+  }
   if (event.key === "ArrowUp") {
     event.preventDefault();
     historyIndex = Math.max(0, historyIndex - 1);
@@ -254,4 +325,6 @@ input.addEventListener("keydown", (event) => {
 });
 
 document.querySelector(".console").addEventListener("click", () => input.focus());
+updateUtcClock();
+setInterval(updateUtcClock, 60_000);
 addWelcome();

@@ -78,7 +78,37 @@ body::after {
 .system-status {
   display: flex;
   align-items: center;
+  gap: 5px;
   color: var(--muted);
+}
+
+.quick-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.quick-nav button {
+  padding: 7px 11px;
+  border: 1px solid #26343b;
+  border-radius: 4px;
+  background: rgb(13 18 24 / 75%);
+  color: #aebbc5;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.quick-nav button:hover,
+.quick-nav button:focus-visible {
+  border-color: #536d5a;
+  color: var(--green);
+}
+
+.quick-nav button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
 }
 
 .status-dot {
@@ -123,30 +153,6 @@ kbd {
   background: #111820;
   color: #7f8c98;
   font-size: 10px;
-}
-
-.window-lights {
-  display: flex;
-  gap: 6px;
-}
-
-.window-lights i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #43504e;
-}
-
-.window-lights i:first-child {
-  background: #df786e;
-}
-
-.window-lights i:nth-child(2) {
-  background: #e1b665;
-}
-
-.window-lights i:nth-child(3) {
-  background: #7ac58c;
 }
 
 .console-title {
@@ -275,17 +281,6 @@ kbd {
   caret-color: var(--green);
 }
 
-.cursor {
-  width: 7px;
-  height: 15px;
-  flex: 0 0 7px;
-  margin-left: -9px;
-  background: var(--green);
-  opacity: .65;
-  pointer-events: none;
-  animation: blink 1s steps(2, start) infinite;
-}
-
 .footer {
   display: flex;
   justify-content: space-between;
@@ -301,12 +296,6 @@ kbd {
 .footer code {
   color: var(--green);
   font: inherit;
-}
-
-@keyframes blink {
-  to {
-    visibility: hidden;
-  }
 }
 
 @media (max-width: 600px) {
