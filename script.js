@@ -1,12 +1,12 @@
 const profile = {
-  name: "Rafael Flores",
+  name: "Rafael A. Flores",
   role: "Linux Enthusiast and Creative Technologist",
-  location: "Woodbridge, Virginia",
+  location: "Alexandria, Virginia",
   email: "yosoyrafh@rafh.cloud",
   github: "https://github.com/",
   linkedin: "https://linkedin.com/",
-  bio: "I enjoy building tools that make life a little easier.",
-  skills: ["JavaScript", "TypeScript", "React", "HTML & CSS", "Node.js", "UI/UX"],
+  bio: "I enjoy building monitoring tools that make life a little bit easier.",
+  skills: ["checkmk", "Skylar One", "Python", "Ansible", "Proxmox"],
   projects: [
     { name: "Project One", description: "A small description of a project you are proud of.", stack: "React · TypeScript" },
     { name: "Project Two", description: "Another project, experiment, or open-source contribution.", stack: "Node.js · API" },
@@ -26,9 +26,8 @@ const files = {
   ],
   "skills.txt": () => [
     { text: "TOOLS I REACH FOR", className: "section-title" },
+    { text: "Red Hat Certified System Administrator - RHEL 10", className: "muted" },
     { text: profile.skills.join("   ·   ") },
-    { text: "" },
-    { text: "Always learning something new.", className: "muted" },
   ],
   "projects.txt": () => [
     { text: "SELECTED WORK", className: "section-title" },
@@ -40,14 +39,14 @@ const files = {
     ]),
   ],
   "contact.txt": () => [
-    { text: "LET'S MAKE SOMETHING GOOD.", className: "section-title" },
+    { text: "Let's build!", className: "section-title" },
     { text: `Email: ${profile.email}` },
     { text: `GitHub: ${profile.github}` },
     { text: `LinkedIn: ${profile.linkedin}` },
   ],
   ".hello": () => [
-    { text: "You found the hidden file. Nice work.", className: "success" },
-    { text: "Every good project starts with a little curiosity.", className: "muted" },
+    { text: "You found the hidden file. Nice work." },
+    { text: "Hidden files in Linux start with a dot and are used to store configuration settings, application data, and system metadata that should not clutter regular directory listings or be accidentally modified." },
   ],
 };
 
@@ -87,6 +86,7 @@ function addWelcome() {
   addLine("Start here:  ls -a     to list files", "muted");
   addLine("            'cat about.txt' to learn about me", "muted");
   addLine("            'help' to see available commands", "muted");
+  addLine("            Type 'clear' to clear the contents of the terminal", "muted");
   addLine("Press Tab to autocomplete commands, files, and directories.", "muted");
   addLine("");
 }
@@ -100,10 +100,7 @@ function listFiles(showHidden = false) {
         { name: "contact.txt", type: "file" },
       ]
     : currentDirectory === "~/projects"
-      ? profile.projects.map((project) => ({
-          name: `${project.name.toLowerCase().replaceAll(" ", "-")}/`,
-          type: "directory",
-        }))
+      ? [{ name: "projects.txt", type: "file" }]
       : [{ name: "README.txt", type: "file" }];
   if (showHidden && currentDirectory === "~") entries.push({ name: ".hello", type: "file" });
   const container = document.createElement("div");
@@ -142,21 +139,10 @@ function showHelp() {
 }
 
 function showProjects() {
-  addLine("projects/", "section-title");
-  for (const project of profile.projects) {
-    addLine(`${project.name.toLowerCase().replaceAll(" ", "-")}/`, "directory");
-  }
+  addLine("projects/", "directory");
+  addLine("projects.txt", "file");
   addLine("");
   addLine("Run `cat projects.txt` to see selected work.", "muted");
-}
-
-function showProject(name) {
-  const project = profile.projects.find((entry) => entry.name.toLowerCase().replaceAll(" ", "-") === name);
-  if (!project) return false;
-  addLine(project.name, "section-title");
-  addLine(project.description);
-  addLine(`Built with: ${project.stack}`, "muted");
-  return true;
 }
 
 function completionCandidates(value) {
@@ -178,12 +164,7 @@ function completionCandidates(value) {
   if (action.toLowerCase() === "cd") {
     const directories = currentDirectory === "~"
       ? ["..", "~", "projects/"]
-      : currentDirectory === "~/projects"
-        ? [
-            "..",
-            ...profile.projects.map((project) => `${project.name.toLowerCase().replaceAll(" ", "-")}/`),
-          ]
-        : [".."];
+      : [".."];
     return directories
       .filter((directory) => directory.toLowerCase().startsWith(prefix))
       .map((directory) => ({ value: directory, isDirectory: true }));
@@ -266,13 +247,7 @@ function runCommand(rawCommand) {
         updatePrompt();
         showProjects();
       } else {
-        const projectName = argument.replace(/\/$/, "");
-        if (currentDirectory === "~/projects" && showProject(projectName)) {
-          currentDirectory = `~/projects/${projectName}`;
-          updatePrompt();
-        } else {
-          addLine(`cd: ${argument}: No such directory`, "warning");
-        }
+        addLine(`cd: ${argument}: No such directory`, "warning");
       }
       break;
     case "history":

@@ -51,7 +51,7 @@ body::after {
   margin: 0 0 19px;
   color: var(--green);
   font-family: monospace;
-  font-size: clamp(6px, 1.8vw, 16px);
+  font-size: 6px;
   font-weight: 600;
   line-height: 1.2;
   text-shadow: 0 0 25px rgb(139 235 165 / 19%);
@@ -91,7 +91,7 @@ body::after {
 
 .quick-nav button {
   padding: 7px 11px;
-  border: 1px solid #26343b;
+  border: 1px solid var(--green);
   border-radius: 4px;
   background: rgb(13 18 24 / 75%);
   color: #aebbc5;

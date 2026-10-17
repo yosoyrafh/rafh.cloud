@@ -2,7 +2,9 @@
 
 **rafh.cloud** is a personal website created for testing, learning, and showcasing monitoring‑related tools, configurations, and concepts.  
 
-The site currently runs on a lightweight VPS hosted on **Vultr**, and is used as a sandbox environment for experimenting with monitoring platforms such as **ScienceLogic SL1**, **Nagios**, **Grafana**, and **OpenTelemetry**.
+The site currently runs on a **Proxmox homelab** and is used as a sandbox environment for experimenting with monitoring platforms such as **ScienceLogic SL1**, **checkmk**, and **OpenTelemetry**.
+
+The Proxmox homelab will also serve as an email host.
 
 ---
 
@@ -25,15 +27,10 @@ This website serves as a small, controlled environment to:
 - Credential mapping, communication tests, and discovery logic  
 - Cache behavior, MySQL queries, and troubleshooting  
 
-### **Nagios / NRPE**
-- Basic plugin development  
-- Threshold testing and check tuning  
-- Service/host definition experiments  
-
-### **Grafana**
-- Lightweight dashboard mockups  
-- Data source testing (Prometheus, Loki, JSON APIs)  
-- Graph styles, panel tuning, and alert rule experiments  
+### **checkmk**
+- Monitoring configuration and host discovery  
+- Agent and service checks  
+- Alerting and dashboard experiments  
 
 ### **OpenTelemetry**
 - Collector configuration testing  
@@ -43,4 +40,4 @@ This website serves as a small, controlled environment to:
 ---
 
 **Website:** https://rafh.cloud  
-**Author:** Rafael Flores# learningC
+**Author:** Rafael Flores#
